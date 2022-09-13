@@ -13,18 +13,18 @@ var data = func() *[]int {
 	for i := TOTAL_SIZE - 1; i >= 0; i-- {
 		L[i] = rand.Intn(10)
 	}
-	return &[]int{9, 8, 88, 7, 6}
+	return &[]int{9, 8, 88, 7, 6, 33, 44}
 }
 var c = 0
 
 func mergeSort(items []int) *[]int {
+	fmt.Println("count", c)
+	c++
 	if len(items) < 2 {
 		return &items
 	}
 	L := mergeSort(items[:len(items)/2])
 	R := mergeSort(items[len(items)/2:])
-	fmt.Println(c)
-	c++
 
 	return merge(*L, *R)
 }
