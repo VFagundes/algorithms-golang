@@ -58,13 +58,17 @@ func (dl *DoublyLinkedList) Remove(value uint16) bool {
 	previous, next := found.Previous, found.Next
 	if previous == nil {
 		dl.Head = next
-		dl.Head.Previous = nil
+		if dl.Head != nil {
+			dl.Head.Previous = nil
+		}
 	} else {
 		previous.Next = next
 	}
 	if next == nil {
 		dl.Tail = previous
-		dl.Tail.Next = nil
+		if dl.Tail != nil {
+			dl.Tail.Next = nil
+		}
 	} else {
 		next.Previous = previous
 	}
