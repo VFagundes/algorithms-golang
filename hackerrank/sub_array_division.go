@@ -33,17 +33,6 @@ func prepareLimits(d string) (int, int) {
 	return d1, d2
 }
 
-// let cont = 0
-
-// s.forEach((num, indice) => {
-// 	let sum = 0
-// 	for(let i = indice; i < indice + m; i++){
-// 		sum += s[i]
-// 	}
-// 	if(sum === d) cont++
-// })
-// return cont
-
 func birthday(s []int, d int, m int) int {
 	total := 0
 
