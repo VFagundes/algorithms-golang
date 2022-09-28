@@ -7,14 +7,13 @@ import (
 func twoSum(nums []int, target int) []int {
 
 	complementMap := map[int]int{}
-	for i, v := range nums {
-		pair := target - v
+	for i := 0; i < len(nums); i++ {
+		pair := target - nums[i]
 		if j, ok := complementMap[pair]; ok {
 			return []int{j, i}
 		}
-		complementMap[v] = i
+		complementMap[nums[i]] = i
 	}
-
 	return []int{}
 }
 
