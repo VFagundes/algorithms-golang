@@ -6,6 +6,7 @@ import (
 )
 
 //https://leetcode.com/problems/best-time-to-buy-and-sell-stock/
+
 func maxProfitSl1(prices []int) int {
 	i, j := 0, 1
 	max := 0
@@ -49,8 +50,8 @@ func maxProfitSl2(prices []int) int {
 
 	}
 	return max
-
 }
+
 func main() {
 	arr1 := []int{7, 1, 5, 3, 6, 4}
 	arr2 := []int{7, 6, 4, 3, 1}
@@ -65,4 +66,6 @@ func main() {
 	fmt.Println(maxProfitSl1(arr2), " expected: 0")
 	fmt.Println(maxProfitSl1(arr3), " expected: 6")
 	fmt.Println(maxProfitSl1(arr4), " expected: 9")
+	fmt.Println("------------------------------------")
+
 }

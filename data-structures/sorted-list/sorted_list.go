@@ -25,5 +25,4 @@ func (sl *SortedList) GetKey(value int) *Node {
 }
 
 func main() {
-
 }
