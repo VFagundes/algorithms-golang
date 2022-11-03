@@ -1,5 +1,6 @@
 package main
 
+// https://www.hackerrank.com/challenges/divisible-sum-pairs/
 import "fmt"
 
 func divisibleSumPairs(n int32, k int32, ar []int32) int32 {
