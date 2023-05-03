@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -9,12 +10,14 @@ var exec = func(strVec []string, fn func(d string) string) {
 	for _, v := range strVec {
 		fmt.Println(fn(v))
 	}
+	fmt.Println("---------------------\n\n")
 }
 
 func main() {
 
 	exec(reverseMock(), reverseStringStack)
 	exec(validParenthesesMock(), validParentheses)
+	exec(postFixMock(), postFix)
 }
 
 func reverseStringStack(s string) string {
@@ -33,11 +36,7 @@ func validParentheses(s string) string {
 	sb.WriteString(" is: ")
 	st := make([]rune, 0)
 	for _, c := range s {
-		if c == '(' {
-			st = append(st, c)
-		} else if c == '{' {
-			st = append(st, c)
-		} else if c == '[' {
+		if c == '(' || c == '{' || c == '[' {
 			st = append(st, c)
 		} else {
 			if len(st) == 0 {
@@ -46,22 +45,27 @@ func validParentheses(s string) string {
 			}
 			current := st[len(st)-1]
 			st = st[:len(st)-1]
-			if current == '(' {
-				if c != ')' {
-					sb.WriteString("unbalanced\n")
-					return sb.String()
+			switch current {
+			case '(':
+				{
+					if c != ')' {
+						sb.WriteString("unbalanced\n")
+						return sb.String()
+					}
 				}
-			}
-			if current == '[' {
-				if c != ']' {
-					sb.WriteString("unbalanced\n")
-					return sb.String()
+			case '[':
+				{
+					if c != ']' {
+						sb.WriteString("unbalanced\n")
+						return sb.String()
+					}
 				}
-			}
-			if current == '{' {
-				if c != '}' {
-					sb.WriteString("unbalanced\n")
-					return sb.String()
+			case '{':
+				{
+					if c != '}' {
+						sb.WriteString("unbalanced\n")
+						return sb.String()
+					}
 				}
 			}
 		}
@@ -73,6 +77,25 @@ func validParentheses(s string) string {
 	}
 	return sb.String()
 }
+func postFix(s string) string {
+	var isNum = func(c byte) bool {
+		_, err := strconv.Atoi(string(c))
+		return err == nil
+
+	}
+	sb := strings.Builder{}
+	st := make([]byte, 0)
+	for i := 0; i < len(s)-1; i++ {
+		// fmt.Print(string(s[i]), " ", isNum(s[i]))
+		st = append(st, s[i])
+		next := s[i+1]
+		if isNum(next) {
+
+		}
+
+	}
+	return sb.String()
+}
 
 var reverseMock = func() []string {
 	return strings.Split("hello,rab,iba", ",")
@@ -80,61 +103,23 @@ var reverseMock = func() []string {
 var validParenthesesMock = func() []string {
 	return strings.Split("([]),[{]},((())),({}[])(),({[}]),){", ",")
 }
+var postFixMock = func() []string {
+	return strings.Split("3 * 4 + 2,( 1 + 2 ) * ( 3 + 4 ),3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3,5 * 4 - 6 / 2,4 * ( 2 + 3 )", ",")
+}
 
 /*
-Input: "({}[])()"
+Input: "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3"
+Output: "3 4 2 * 1 5 - 2 3 ^ ^ / +"
 
-Expected Output: true
+Input: "5 * 4 - 6 / 2"
+Output: "5 4 * 6 2 / -"
 
-Input: "({[}])"
+Input: "4 * ( 2 + 3 )"
+Output: "4 2 3 + *"
 
-Expected Output: false
+Input: "( 1 + 2 ) * ( 3 + 4 )"
+Output: "1 2 + 3 4 + *"
 
-Input: "(a + b) * (c - d)"
-
-Expected Output: true
-
-Input: "{()[]"
-
-Expected Output: false
-
-Input: "(())({})"
-
-Expected Output: true
-
-Input: "({)}"
-*/
-
-/*
-Reverse a string using a stack
-
-Input: "hello"
-
-Output: "olleh"
-
-Check if a string of parentheses is balanced
-
-Input: "({}[])()"
-
-Output: true
-
-Input: "({[}])"
-
-Output: false
-
-Evaluate a postfix expression using a stack
-
-Input: "3 4 + 5 *"
-
-Output: 35
-
-Input: "4 2 * 5 + 1 -"
-
-Output: 8
-
-Implement the Tower of Hanoi problem using stacks
-
-Input: Three stacks representing the pegs with n disks on the first peg.
-
-Output: The final configuration of disks on the third peg.
+Input: "3 * 4 + 2"
+Output: "3 4 * 2 +"
 */
