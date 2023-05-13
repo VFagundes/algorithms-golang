@@ -2,12 +2,11 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 )
 
-var exec = func(strVec []string, fn func(d string) string) {
-	for _, v := range strVec {
+var exec = func(strVec func() []string, fn func(d string) string) {
+	for _, v := range strVec() {
 		fmt.Println(fn(v))
 	}
 	fmt.Println("---------------------\n\n")
@@ -15,9 +14,9 @@ var exec = func(strVec []string, fn func(d string) string) {
 
 func main() {
 
-	exec(reverseMock(), reverseStringStack)
-	exec(validParenthesesMock(), validParentheses)
-	exec(postFixMock(), postFix)
+	exec(reverseMock, reverseStringStack)
+	exec(validParenthesesMock, validParentheses)
+	exec(reverseInParenthesesMock, reverseInParentheses)
 }
 
 func reverseStringStack(s string) string {
@@ -30,70 +29,54 @@ func reverseStringStack(s string) string {
 	return sb.String()
 }
 func validParentheses(s string) string {
+	if len(s) < 2 {
+		s := fmt.Sprintf("%s is unbalanced", s)
+		return s
+	}
 	sb := strings.Builder{}
-	sb.Grow(len(s))
+	st := make([]rune, 0)
 	sb.WriteString(s)
 	sb.WriteString(" is: ")
-	st := make([]rune, 0)
 	for _, c := range s {
-		if c == '(' || c == '{' || c == '[' {
+		if c == '{' || c == '[' || c == '(' {
 			st = append(st, c)
 		} else {
 			if len(st) == 0 {
-				sb.WriteString("unbalanced\n")
+				sb.WriteString("unbalanced")
 				return sb.String()
 			}
-			current := st[len(st)-1]
+			d := st[len(st)-1]
 			st = st[:len(st)-1]
-			switch current {
-			case '(':
-				{
-					if c != ')' {
-						sb.WriteString("unbalanced\n")
-						return sb.String()
-					}
+			if d == '{' {
+				if c != '}' {
+					sb.WriteString("unbalanced")
+					return sb.String()
 				}
-			case '[':
-				{
-					if c != ']' {
-						sb.WriteString("unbalanced\n")
-						return sb.String()
-					}
+			}
+			if d == '[' {
+				if c != ']' {
+					sb.WriteString("unbalanced")
+					return sb.String()
 				}
-			case '{':
-				{
-					if c != '}' {
-						sb.WriteString("unbalanced\n")
-						return sb.String()
-					}
+			}
+			if d == '(' {
+				if c != ')' {
+					sb.WriteString("unbalanced")
+					return sb.String()
 				}
 			}
 		}
+
 	}
 	if len(st) > 0 {
-		sb.WriteString("unbalanced\n")
+		sb.WriteString("unbalanced")
 	} else {
-		sb.WriteString("balanced\n")
+		sb.WriteString("balanced")
 	}
 	return sb.String()
 }
-func postFix(s string) string {
-	var isNum = func(c byte) bool {
-		_, err := strconv.Atoi(string(c))
-		return err == nil
-
-	}
+func reverseInParentheses(s string) string {
 	sb := strings.Builder{}
-	st := make([]byte, 0)
-	for i := 0; i < len(s)-1; i++ {
-		// fmt.Print(string(s[i]), " ", isNum(s[i]))
-		st = append(st, s[i])
-		next := s[i+1]
-		if isNum(next) {
-
-		}
-
-	}
 	return sb.String()
 }
 
@@ -103,23 +86,55 @@ var reverseMock = func() []string {
 var validParenthesesMock = func() []string {
 	return strings.Split("([]),[{]},((())),({}[])(),({[}]),){", ",")
 }
-var postFixMock = func() []string {
-	return strings.Split("3 * 4 + 2,( 1 + 2 ) * ( 3 + 4 ),3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3,5 * 4 - 6 / 2,4 * ( 2 + 3 )", ",")
+
+var reverseInParenthesesMock = func() []string {
+	return strings.Split("(bar),foo(bar)baz,foo(bar)baz(blim),foo(bar(baz))blim")
+
+	// For inputString = "(bar)", the output should be
+	// solution(inputString) = "rab";
+	// For inputString = "foo(bar)baz", the output should be
+	// solution(inputString) = "foorabbaz";
+	// For inputString = "foo(bar)baz(blim)", the output should be
+	// solution(inputString) = "foorabbazmilb";
+	// For inputString = "foo(bar(baz))blim", the output should be
+	// solution(inputString) = "foobazrabblim".
+	// Because "foo(bar(baz))blim" becomes "foo(barzab)blim" and then "foobazrabblim".
 }
 
 /*
-Input: "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3"
-Output: "3 4 2 * 1 5 - 2 3 ^ ^ / +"
+func reverseString(s string) string {
+	runes := []rune(s)
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		runes[i], runes[j] = runes[j], runes[i]
+	}
+	return string(runes)
+}
 
-Input: "5 * 4 - 6 / 2"
-Output: "5 4 * 6 2 / -"
+func solution(inputString string) string {
+	stack := []string{}
+	result := ""
 
-Input: "4 * ( 2 + 3 )"
-Output: "4 2 3 + *"
+	for _, char := range inputString {
+		if char == ')' {
+			reversed := reverseString(stack[len(stack)-1])
+			stack = stack[:len(stack)-1]
 
-Input: "( 1 + 2 ) * ( 3 + 4 )"
-Output: "1 2 + 3 4 + *"
+			if len(stack) == 0 {
+				result += reversed
+			} else {
+				stack[len(stack)-1] += reversed
+			}
+		} else if char == '(' {
+			stack = append(stack, "")
+		} else {
+			if len(stack) == 0 {
+				result += string(char)
+			} else {
+				stack[len(stack)-1] += string(char)
+			}
+		}
+	}
 
-Input: "3 * 4 + 2"
-Output: "3 4 * 2 +"
+	return result
+}
 */
