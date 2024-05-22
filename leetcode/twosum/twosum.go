@@ -6,20 +6,21 @@ import (
 
 // https://leetcode.com/problems/two-sum/
 func twoSum(nums []int, target int) []int {
-
-	complementMap := map[int]int{}
-	for i := 0; i < len(nums); i++ {
-		pair := target - nums[i]
-		if j, ok := complementMap[pair]; ok {
-			return []int{j, i}
+	m := make(map[int]int, 0)
+	for i, v := range nums {
+		current, ok := m[v]
+		if ok {
+			return []int{current, i}
 		}
-		complementMap[nums[i]] = i
+		m[target-v] = i
+
 	}
+
 	return []int{}
 }
 
 func main() {
-	arr := []int{2, 7, 11, 15, 33}
+	arr := []int{2, 11, 15, 33, 7}
 	fmt.Println(twoSum(arr, 9))
 	arr2 := []int{2, 0, 33, 5, 7, 10}
 	fmt.Println(twoSum(arr2, 10))
