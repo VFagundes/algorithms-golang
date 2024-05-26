@@ -74,9 +74,9 @@ func (l *LinkedList) InsertAtTheEnd(Value int32) int32 {
 	return l.Length
 }
 func (l *LinkedList) Reverse() {
+	current := l.Head
 	var prev *Node
 	var next *Node
-	current := l.Head
 	for current != nil {
 		next = current.Next
 		current.Next = prev
