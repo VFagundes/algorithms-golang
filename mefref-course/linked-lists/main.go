@@ -74,16 +74,62 @@ func (l *LinkedList) InsertAtTheEnd(Value int32) int32 {
 	return l.Length
 }
 func (l *LinkedList) Reverse() {
+	// nil<-1<-2<-3
 	current := l.Head
-	var prev *Node
-	var next *Node
+	var prev, next *Node
 	for current != nil {
 		next = current.Next
 		current.Next = prev
 		prev = current
 		current = next
+
 	}
 	l.Head = prev
+
+}
+
+func addTwoNumbers(l1 *LinkedList, l2 *LinkedList) *LinkedList {
+	// https://leetcode.com/problems/add-two-numbers/
+	tmp := &Node{}
+	current := tmp
+	var carry int32 = 0
+	currentl1 := l1.Head
+	currentl2 := l2.Head
+	var length int32 = 0
+	for currentl1 != nil || currentl2 != nil {
+		var sum int32 = carry
+		if currentl1 != nil {
+			sum += currentl1.Data
+			currentl1 = currentl1.Next
+		}
+		if currentl2 != nil {
+			sum += currentl2.Data
+			currentl2 = currentl2.Next
+		}
+		current.Next = &Node{Data: sum % 10}
+		current = current.Next
+		carry = sum / 10
+		length++
+	}
+	if carry > 0 {
+		current.Next = &Node{Data: carry}
+	}
+	l := LinkedList{}
+	l.Head = tmp.Next
+	l.Length = length
+	return &l
+
+}
+func runAddTwoNumbers() {
+	l1 := New(3)
+	l1.Prepend(4)
+	l1.Prepend(2)
+	l1.PrintList()
+	l2 := New(4)
+	l2.Prepend(6)
+	l2.Prepend(5)
+	l2.PrintList()
+	addTwoNumbers(l1, l2).PrintList()
 
 }
 
@@ -96,15 +142,8 @@ func main() {
 	l.PrintList()
 	l.Reverse()
 	l.PrintList()
-	// l.Reverse()
-
-	// l.Prepend(0)
-	// l.Prepend(-1)
-	// l.PrintList()
-	// l.Delete(1)
-	// l.Delete(12)
-	// l.Delete(111)
-	// l.InsertAtTheEnd(2)
+	fmt.Println("------- end of method execution -------")
+	runAddTwoNumbers()
 
 	fmt.Println("print linked list code")
 }
