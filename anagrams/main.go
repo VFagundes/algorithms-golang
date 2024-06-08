@@ -56,6 +56,7 @@ func main() {
 	a = anagramRefactor(input)
 	b = allAnagrams(input)
 	fmt.Println(a)
+	//expected  #output [[adapt,aptad],[dream,armed]]
 	fmt.Println(b)
 
 }
