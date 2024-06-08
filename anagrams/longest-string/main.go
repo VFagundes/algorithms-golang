@@ -15,15 +15,14 @@ func lengthOfLongestSubstring(s string) int {
 	m := make(map[byte]int)
 	l, max := 0, 0
 	for r := 0; r < len(s); r++ {
-		if i, ok := m[s[r]]; ok && i >= l {
-			l = i + 1
+		if v, ok := m[s[r]]; ok && l <= v {
+			l = v + 1
 		}
 		m[s[r]] = r
-		if r-l+1 > max {
+		if max < r-l+1 {
 			max = r - l + 1
 		}
 	}
-
 	return max
 }
 
@@ -38,3 +37,14 @@ func main() {
 	fmt.Println(" ", lengthOfLongestSubstring("bbbbb"))
 
 }
+
+/*
+dvdf 3
+aab 2
+abba 2
+abcabcbb 3
+pwwkew 3
+bbbbb 1
+baa 1
+  1
+*/
