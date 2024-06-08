@@ -3,27 +3,25 @@ package main
 import "fmt"
 
 var longestOnes = func(nums []int, k int) int {
-	maxx, l, zeros := 0, 0, 0
+	max, l, zeros := 0, 0, 0
 	for r := 0; r < len(nums); r++ {
 		if nums[r] == 0 {
 			zeros++
 		}
-		for zeros > k {
+		for k < zeros {
 			if nums[l] == 0 {
 				zeros--
 			}
 			l++
 		}
-		maxx = max(r-l+1, maxx)
+		if max < r-l+1 {
+			max = r - l + 1
+			continue
+		}
+
 	}
 
-	return maxx
-}
-var max = func(i, j int) int {
-	if i > j {
-		return i
-	}
-	return j
+	return max
 }
 
 func main() {
